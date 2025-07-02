@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'monitoring/**'
+      - 'docker-compose.yml'
 
 jobs:
   deploy-monitoring:
@@ -18,6 +19,9 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd /home/ec2-user/tallervv
+          if [ ! -d ~/tallervv ]; then
+            git clone https://github.com/veronicaalarcona/tallervv.git ~/tallervv
+          fi
+          cd ~/tallervv
           git pull origin main
-          docker compose up -d prometheus grafana
+          docker-compose up -d prometheus grafana
