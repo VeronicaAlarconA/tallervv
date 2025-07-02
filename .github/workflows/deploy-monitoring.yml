@@ -25,11 +25,5 @@ jobs:
           cd ~/tallervv
           git pull origin main
 
-          # Asegúrate de que prometheus.yml sea un archivo
-          if [ -d ./monitoring/prometheus/prometheus.yml ]; then
-            sudo rm -rf ./monitoring/prometheus/prometheus.yml
-            touch ./monitoring/prometheus/prometheus.yml
-          fi
-
           docker-compose down -v
           docker-compose up -d prometheus grafana
