@@ -1,0 +1,21 @@
+name: Deploy App to EC2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: SSH Deploy App
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Connect to EC2 and deploy
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd /home/ec2-user/tallervv
+          git pull origin main
+          docker compose up -d app

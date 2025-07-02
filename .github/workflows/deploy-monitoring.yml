@@ -1,0 +1,23 @@
+name: Deploy Monitoring Stack
+
+on:
+  push:
+    paths:
+      - 'monitoring/**'
+
+jobs:
+  deploy-monitoring:
+    name: Deploy Prometheus and Grafana to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd /home/ec2-user/tallervv
+          git pull origin main
+          docker compose up -d prometheus grafana
