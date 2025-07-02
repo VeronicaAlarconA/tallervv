@@ -1,7 +1,6 @@
 name: Deploy App to EC2
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - 'app/**'
@@ -12,13 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploy to EC2
+    - name: Deploy to EC2 via SSH
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          if [ ! -d ~/tallervv ]; then
+            git clone https://github.com/veronicaalarcona/tallervv.git ~/tallervv
+          fi
           cd ~/tallervv
           git pull origin main
           docker-compose up -d app
+
