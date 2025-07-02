@@ -20,5 +20,5 @@ jobs:
         script: |
           cd ~/tallervv
           git pull origin main
-          docker-compose up -d app
+          docker-compose up -d 
 
