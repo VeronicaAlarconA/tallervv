@@ -19,37 +19,22 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          # Ir al repositorio
-          cd ~/tallervv || {
-            echo "Clonando repositorio por primera vez..."
+          # Clonar repositorio si no existe
+          if [ ! -d ~/tallervv ]; then
             git clone https://github.com/veronicaalarcona/tallervv.git ~/tallervv
-            cd ~/tallervv
-          }
+          fi
 
-          # Actualizar código
-          git pull origin main
+          cd ~/tallervv
 
-          # 🔥 Eliminar conflicto: directorio con el nombre del archivo
+          # 🔥 Eliminar conflicto: si prometheus.yml es un directorio, borrarlo
           if [ -d monitoring/prometheus/prometheus.yml ]; then
             echo "Eliminando directorio prometheus.yml que causa conflicto..."
             sudo rm -rf monitoring/prometheus/prometheus.yml
           fi
 
-          # ✅ Verificar si el archivo existe después del pull
-          if [ ! -f monitoring/prometheus/prometheus.yml ]; then
-            echo "Archivo prometheus.yml no existe, creando uno por seguridad..."
-            mkdir -p monitoring/prometheus
-            cat > monitoring/prometheus/prometheus.yml << 'EOF'
-global:
-  scrape_interval: 15s
+          # 📥 Actualizar el repositorio
+          git pull origin main
 
-scrape_configs:
-  - job_name: 'prometheus'
-    static_configs:
-      - targets: ['localhost:9090']
-EOF
-          fi
-
-          # 🔄 Levantar contenedores con Docker Compose
+          # 🐳 Levantar Prometheus y Grafana
           docker-compose down -v
           docker-compose up -d prometheus grafana
