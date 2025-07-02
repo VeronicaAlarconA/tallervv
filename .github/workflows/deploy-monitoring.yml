@@ -19,13 +19,11 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          if [ ! -d ~/tallervv ]; then
-            git clone https://github.com/veronicaalarcona/tallervv.git ~/tallervv
-          fi
-
+          sudo rm -rf ~/tallervv
+          git clone https://github.com/veronicaalarcona/tallervv.git ~/tallervv
           cd ~/tallervv
-          git pull origin main
-
           docker-compose pull prometheus grafana
           docker-compose down -v
           docker-compose up -d prometheus grafana
+
+        
