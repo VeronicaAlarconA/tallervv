@@ -19,22 +19,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          # Clonar repositorio si no existe
-          if [ ! -d ~/tallervv ]; then
-            git clone https://github.com/veronicaalarcona/tallervv.git ~/tallervv
-          fi
-
+          
           cd ~/tallervv
-
-          # 🔥 Eliminar conflicto: si prometheus.yml es un directorio, borrarlo
-          if [ -d monitoring/prometheus/prometheus.yml ]; then
-            echo "Eliminando directorio prometheus.yml que causa conflicto..."
-            sudo rm -rf monitoring/prometheus/prometheus.yml
-          fi
-
-          # 📥 Actualizar el repositorio
           git pull origin main
-
-          # 🐳 Levantar Prometheus y Grafana
-          docker-compose down -v
           docker-compose up -d prometheus grafana
