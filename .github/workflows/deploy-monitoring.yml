@@ -25,4 +25,5 @@ jobs:
           fi
           cd ~/tallervv
           git pull origin main
+          docker-compose down -v
           docker-compose up -d prometheus grafana
