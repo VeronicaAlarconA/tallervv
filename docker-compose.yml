@@ -2,30 +2,44 @@ version: '3.8'
 
 services:
   app:
-    build: ./app
+    image: python:3.10 
     container_name: python-app
     ports:
-      - "5000:5000"
+      - "8000:8000"
+    command: sleep infinity
+    volumes:
+      - ./app:/app
     networks:
-      - observability
+      - monitor-net
 
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
     volumes:
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     networks:
-      - observability
+      - monitor-net
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
       - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
     networks:
-      - observability
+      - monitor-net
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana-storage:
 
 networks:
-  observability:
+  monitor-net:
