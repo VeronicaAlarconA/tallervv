@@ -18,6 +18,6 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd ~/tallervv
+          cd /home/ec2-user/tallervv
           git pull origin main
           docker-compose up -d app
