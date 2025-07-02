@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: ghcr.io/veronicaalarcona/tallervv:latest
+    build: ./app
     container_name: python-app
     ports:
       - "5000:5000"
