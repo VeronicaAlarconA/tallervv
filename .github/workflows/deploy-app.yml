@@ -21,7 +21,10 @@ jobs:
           if [ ! -d ~/tallervv ]; then
             git clone https://github.com/veronicaalarcona/tallervv.git ~/tallervv
           fi
+
           cd ~/tallervv
           git pull origin main
-          docker-compose up -d app
 
+          docker-compose pull app
+          docker-compose down -v
+          docker-compose up -d app
